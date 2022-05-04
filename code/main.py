@@ -25,6 +25,9 @@ def main():
     model.fit_generator(generator=training_generator,
                     use_multiprocessing=True,
                     workers=6)
+    
+    print('Saving model!')
+    model.save(dirname)
 
 
 if __name__ == '__main__':
