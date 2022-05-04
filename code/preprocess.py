@@ -19,17 +19,21 @@ class DataGenerator(keras.utils.all_utils.Sequence):
     base_path : Path where we will find our data
     """
     
-    def __init__(self, list_IDs, labels, base_path, batch_size=32, dims = (256, 256, 1), shuffle=True):
+    def __init__(self, base_path, batch_size=32, dims = (256, 256, 1), shuffle=True):
         'Initialization'
 
+
+        assert(os.path.exists(base_path))
         ## TODO: Change this to just load names as all the files in the images path / labels path.
         self.base_path = base_path
         self.batch_size = batch_size
-        self.labels = labels
-        self.list_IDs = list_IDs
+
         self.dims = dims
-        self.image_path = os.path.join(self.base_path, 'train')
+        self.image_path = os.path.join(self.base_path, 'images')
         self.labels_path = os.path.join(self.base_path, 'gt')
+
+        self.labels = os.listdir(self.labels_path)
+        self.list_IDs = os.listdir(self.image_path)
 
         self.shuffle = shuffle
         self.on_epoch_end()
@@ -40,11 +44,16 @@ class DataGenerator(keras.utils.all_utils.Sequence):
 
     def __getitem__(self, index):
         'Generate one batch of data'
-        # Generate indexes of the batch
+
+        ## TODO: NEED TO CHANGE THIS #################
+
+
+        # Generate indexes of the batch 
         indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
 
         # Find list of IDs
         list_IDs_temp = [self.list_IDs[k] for k in indexes]
+        ##########################################
 
         # Generate data
         X, y = self.__data_generation(list_IDs_temp)
@@ -72,10 +81,10 @@ class DataGenerator(keras.utils.all_utils.Sequence):
 
 
         # Generate data
-        for i in enumerate(list_IDs_temp):
+        for (i, fname) in enumerate(list_IDs_temp):
 
-            train_image_name = os.path.join(self.imagespath, i)
-            test_image_name = os.path.join(self.labels_path, i)
+            train_image_name = os.path.join(self.image_path, fname)
+            test_image_name = os.path.join(self.labels_path, fname)
             
             X.append(self.image_to_array(train_image_name))
             y.append(self.image_to_array(test_image_name))
@@ -93,7 +102,12 @@ class DataGenerator(keras.utils.all_utils.Sequence):
         #Normalize
         return imarray / 255.0
 
+
+### This is just for validation. Will remove.
 if __name__ == "__main__":
     dirname = os.path.dirname(__file__)
-    base_path = os.path.join(dirname, 'AerialImagesDataset')
-    d = DataGenerator( [], [], base_path )
+    base_path = os.path.join(dirname, '../AerialImagesDataset/train') # Just set to train for now
+    d = DataGenerator( base_path )
+
+    a, b = d.__getitem__(0)
+    pass

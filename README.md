@@ -22,6 +22,14 @@ Paper implements supervised learning with 5 modules:
 5. Tester Module: Same, but for testing. Can be a little simpler -- doesn't have to test in parallel.
 
 
+# Hardware
+
+From the paper: 
+
+>"For the purposes of this paper, the
+>NVIDIA graphics processer based on the general computing engine
+>CUDA 9.0 is made use of to achieve massive parallel computing acceleration training."
+
 # Some useful links:
 
 - Understanding U-NET : https://medium.com/geekculture/u-net-implementation-from-scratch-using-tensorflow-b4342266e406
