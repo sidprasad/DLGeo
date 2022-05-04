@@ -17,7 +17,7 @@ import tensorflow as tf
 # https://github.com/MKeel1ng/MULTI-CHANNEL-UNET/blob/master/MULTI_CHANNEL_UNET.ipynb
 
 
-def UNetModel(input_size = (256,256,3), pretrained_weights = None):
+def UNetModel(pretrained_weights = None, input_size = (256,256,3)):
     inputs = Input(input_size)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)

@@ -13,6 +13,8 @@ def main():
     :return: None
     '''
 
+    num_epochs = 5
+
     # May have to play with this a little to work with the unet model
     # UNET DOES NOT WORK WITH ARBITRARY INPUT SIZES. We need to split our images up to (256,256, 3)
 
@@ -27,6 +29,7 @@ def main():
     # Train model on dataset
     model.fit_generator(generator=training_generator,
                     use_multiprocessing=True,
+                    epochs = num_epochs,
                     workers=6)
 
     # I think the issue is that the output of the model is in 3 channels, 
