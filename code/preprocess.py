@@ -19,7 +19,7 @@ class DataGenerator(keras.utils.all_utils.Sequence):
     base_path : Path where we will find our data
     """
     
-    def __init__(self, base_path, batch_size=32, dims = (256, 256, 1), shuffle=True):
+    def __init__(self, base_path, batch_size=32, img_dims = (5000, 5000, 3), label_dims = (5000,5000), shuffle=True):
         'Initialization'
 
 
@@ -28,7 +28,8 @@ class DataGenerator(keras.utils.all_utils.Sequence):
         self.base_path = base_path
         self.batch_size = batch_size
 
-        self.dims = dims
+        self.img_dims = img_dims
+        self.label_dims = label_dims
         self.image_path = os.path.join(self.base_path, 'images')
         self.labels_path = os.path.join(self.base_path, 'gt')
 
@@ -74,23 +75,21 @@ class DataGenerator(keras.utils.all_utils.Sequence):
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples' # X : (n_samples, *dim, n_channels)
         # Initialization
-        X = np.empty(self.batch_size)
-        y = np.empty(self.batch_size) # Need to add the additional dimensions here.
 
+        img_batch_dim = (self.batch_size,) + self.img_dims
+        label_batch_dim = (self.batch_size,) + self.label_dims
 
+        X = np.empty(img_batch_dim )
+        y = np.empty(label_batch_dim) 
 
-
-        # Generate data
+        # Read a batch from memory
         for (i, fname) in enumerate(list_IDs_temp):
 
             train_image_name = os.path.join(self.image_path, fname)
             test_image_name = os.path.join(self.labels_path, fname)
             
-            X.append(self.image_to_array(train_image_name))
-            y.append(self.image_to_array(test_image_name))
-
-
-            
+            X[i] = (self.image_to_array(train_image_name))
+            y[i] = (self.image_to_array(test_image_name))
 
         return X, y
 
