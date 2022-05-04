@@ -5,8 +5,6 @@ import keras.utils.all_utils
 from PIL import Image
 
 
-# TODO: Keep working on this. Refer to https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly
-
 class DataGenerator(keras.utils.all_utils.Sequence):
     """
     Generates data for Keras to consume.
@@ -14,7 +12,7 @@ class DataGenerator(keras.utils.all_utils.Sequence):
     
     batch_size : Size of each batch
     shuffle: Whether we should shuffle data for each epoch.
-    dim: Dimensions of data we want.
+    
     
     base_path : Path where we will find our data
     """
@@ -45,6 +43,7 @@ class DataGenerator(keras.utils.all_utils.Sequence):
 
     def __getitem__(self, index):
         'Generate one batch of data'
+        """returns data in the shape (batch_size, img_dims) and (batch_size, label_dims) """
 
         ## TODO: NEED TO CHANGE THIS #################
 
@@ -101,12 +100,3 @@ class DataGenerator(keras.utils.all_utils.Sequence):
         #Normalize
         return imarray / 255.0
 
-
-### This is just for validation. Will remove.
-if __name__ == "__main__":
-    dirname = os.path.dirname(__file__)
-    base_path = os.path.join(dirname, '../AerialImagesDataset/train') # Just set to train for now
-    d = DataGenerator( base_path )
-
-    a, b = d.__getitem__(0)
-    pass

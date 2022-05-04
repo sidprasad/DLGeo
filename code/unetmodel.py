@@ -10,6 +10,7 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras import backend as keras
 
 
+# I think this only works on 1-channel images. We need to somehow get this to work for 3 channel images?
 def UNetModel(input_size = (256,256,1), pretrained_weights = None):
     inputs = Input(input_size)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
