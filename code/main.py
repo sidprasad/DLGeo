@@ -11,13 +11,14 @@ def main():
     '''
 
     # May have to play with this a little to work with the unet model
-    current_input_size = (5000,5000,3)
+    # UNET DOES NOT WORK WITH ARBITRARY INPUT SIZES. We need to split our images up to (256,256, 3)
+
 
     dirname = os.path.dirname(__file__)
     train_path = os.path.join(dirname, '../AerialImagesDataset/train') 
-    training_generator = DataGenerator( train_path )
+    training_generator = DataGenerator( train_path, img_dims = (256, 256, 3), label_dims = (256,256) ) ## Eventually these dims must change
 
-    model = UNetModel(input_size = current_input_size)
+    model = UNetModel()
 
 
     # Train model on dataset

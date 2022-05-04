@@ -8,10 +8,16 @@ from keras.layers import *
 from keras.optimizers import *
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras import backend as keras
+import tensorflow as tf
 
 
-# I think this only works on 1-channel images. We need to somehow get this to work for 3 channel images?
-def UNetModel(input_size = (256,256,1), pretrained_weights = None):
+
+#TODO: issue, since our labels are one channel only. What can we do?
+#See: https://stackoverflow.com/questions/62321789/using-u-net-in-python-with-3-channel-input-images-for-image-segmentation
+# https://github.com/MKeel1ng/MULTI-CHANNEL-UNET/blob/master/MULTI_CHANNEL_UNET.ipynb
+
+
+def UNetModel(input_size = (256,256,3), pretrained_weights = None):
     inputs = Input(input_size)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(inputs)
     conv1 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv1)
@@ -51,12 +57,16 @@ def UNetModel(input_size = (256,256,1), pretrained_weights = None):
     conv9 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(merge9)
     conv9 = Conv2D(64, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv9)
     conv9 = Conv2D(2, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv9)
-    conv10 = Conv2D(1, 1, activation = 'sigmoid')(conv9)
+    conv10 = Conv2D(1, 1, activation = 'sigmoid')(conv9) # Should this be 3 not 1? Lets see.
 
-    model = Model(input = inputs, output = conv10)
+
+    # model = Model(input = inputs, output = conv10)
+    # TODO: Why isn't the line above working?
+    model = Model(inputs, conv10)
 
     # TODO: Learning rate set to 0.002 by huang et al
-    model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
+    optimizer = tf.keras.optimizers.Adam(learning_rate=1e-4)
+    model.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
     
 
     if(pretrained_weights):

@@ -22,7 +22,7 @@ class DataGenerator(keras.utils.all_utils.Sequence):
 
 
         assert(os.path.exists(base_path))
-        ## TODO: Change this to just load names as all the files in the images path / labels path.
+
         self.base_path = base_path
         self.batch_size = batch_size
 
@@ -90,11 +90,24 @@ class DataGenerator(keras.utils.all_utils.Sequence):
             X[i] = (self.image_to_array(train_image_name))
             y[i] = (self.image_to_array(test_image_name))
 
+        # TODO:  # UNET DOES NOT WORK WITH ARBITRARY INPUT SIZES. We need to split our images up to (256,256, 3) --> Currently (5000,5000,3)
+
         return X, y
 
 
     def image_to_array(self, path_to_image):
+
+
+        # TODO: Should I be resizing images or breaking them up into tiles. Seems like information loss. 
+        # For now, just resize for ease.
+
+
+
+
         im = Image.open(path_to_image)
+
+        im = im.resize((256,256))
+
         imarray = np.array(im)
 
         #Normalize
