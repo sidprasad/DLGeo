@@ -116,3 +116,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#DS Store
+.DS_Store
+
+# 
+AerialImagesDataset/**
