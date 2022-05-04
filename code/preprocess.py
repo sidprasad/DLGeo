@@ -1,12 +1,13 @@
 import os
 import numpy as np
 import keras
+import keras.utils.all_utils
 from PIL import Image
 
 
 # TODO: Keep working on this. Refer to https://stanford.edu/~shervine/blog/keras-how-to-generate-data-on-the-fly
 
-class DataGenerator(keras.utils.Sequence):
+class DataGenerator(keras.utils.all_utils.Sequence):
     """
     Generates data for Keras to consume.
     
@@ -91,3 +92,8 @@ class DataGenerator(keras.utils.Sequence):
 
         #Normalize
         return imarray / 255.0
+
+if __name__ == "__main__":
+    dirname = os.path.dirname(__file__)
+    base_path = os.path.join(dirname, 'AerialImagesDataset')
+    d = DataGenerator( [], [], base_path )

@@ -120,5 +120,7 @@ ENV/
 #DS Store
 .DS_Store
 
+.vscode/**
+
 # 
 AerialImagesDataset/**
