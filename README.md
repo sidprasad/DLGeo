@@ -12,12 +12,18 @@ Paper implements supervised learning with 5 modules:
     - It seems like multiple datasets were used, but all from the INRIA Aerial Image Labeling Dataset. This provides aerial images and their separate respective markers. 
     - We have 180 high-resolution images from different cities around the world (including drawings of buildings and non-buildings). 
     - As far as I can tell, all images are 5000x5000 pixels, with a DPI of 72 pixels per inch.
+
+    (Implemented in preprocess.py)
+
     
 2. Neural Network Module: Implements U-Net architecture.   
+
+    (Implemented in UNetModel.py)
 
 3. Loss Function Module : Implements a special self-correcting loss function.
 
 4. Trainer Module: Stiches everything together for training (sort of like what we've been doing in `main.py` in class assignments). This probably needs to be parallelizable, and leverage GPUs.
+    (Implemented in main.py)
 
 5. Tester Module: Same, but for testing. Can be a little simpler -- doesn't have to test in parallel.
 
