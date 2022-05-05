@@ -3,6 +3,7 @@ import numpy as np
 import keras
 import keras.utils.all_utils
 from PIL import Image
+import tensorflow as tf
 
 
 class DataGenerator(keras.utils.all_utils.Sequence):
@@ -102,13 +103,19 @@ class DataGenerator(keras.utils.all_utils.Sequence):
         # For now, just resize for ease.
 
 
-
-
         im = Image.open(path_to_image)
 
         im = im.resize((256,256))
 
         imarray = np.array(im)
+        imarray = imarray * 1.0
+
+        if (len(imarray.shape) == 3):
+        # GREYSCALE? TODO: REMOVE THIS!!!!
+            imarray = tf.image.rgb_to_grayscale(imarray)
+            imarray = imarray.numpy() * 1.0
+
+        
 
         #Normalize
         return imarray / 255.0

@@ -4,7 +4,7 @@ import os
 import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
-
+import PIL
 
 def main():
     '''
@@ -21,7 +21,7 @@ def main():
 
     dirname = os.path.dirname(__file__)
     train_path = os.path.join(dirname, '../AerialImagesDataset/train') 
-    training_generator = DataGenerator( train_path, img_dims = (256, 256, 3), label_dims = (256,256) ) ## Eventually these dims must change
+    training_generator = DataGenerator( train_path, img_dims = (256, 256, 1), label_dims = (256,256) ) ## Eventually these dims must change
 
     model = UNetModel()
 
@@ -46,8 +46,15 @@ def main():
     input_arr = np.array([image])  # Convert single image to a batch.
     predictions = model.predict(input_arr)
 
-    plt.imshow((predictions[0] * 255).astype(np.uint8))
-    plt.show()
+    p = predictions[0]
+    p = np.uint8(p * 255)
+    
+    mat = np.reshape(p, (256,256))
+
+    im = PIL.Image.fromarray(mat)
+    im.show()
+
+
 
 
 if __name__ == '__main__':
