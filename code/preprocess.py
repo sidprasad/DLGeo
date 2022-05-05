@@ -115,22 +115,22 @@ class DataGenerator(keras.utils.all_utils.Sequence):
 
     def image_to_array(self, path_to_image):
 
-        im = tf.keras.preprocessing.image.load_img(
+        with tf.keras.preprocessing.image.load_img(
             path_to_image, 
             color_mode="grayscale",
-            target_size=self.ts)
+            target_size=self.ts) as im:
 
 
-        tile_size = self.target_dims
+            tile_size = self.target_dims
 
-        imarray = np.array(im)
-        imarray = np.reshape(imarray, (self.ts[0], self.ts[1], 1))
+            imarray = np.array(im)
+            imarray = np.reshape(imarray, (self.ts[0], self.ts[1], 1))
 
-        imarray = (imarray * 1.0) / 255.0
-        
-        # Now tile:
-        s = split_image(imarray, tile_size)
-        return s 
+            imarray = (imarray * 1.0) / 255.0
+            
+            # Now tile:
+            s = split_image(imarray, tile_size)
+            return s 
 
 
 

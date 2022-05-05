@@ -28,10 +28,10 @@ def main():
 
     # Train model on dataset
     model.fit_generator(generator=training_generator,
-                    use_multiprocessing=True,
+                    use_multiprocessing=False, # Set to true later
                     epochs = num_epochs,
                     steps_per_epoch = 100,
-                    workers=6)
+                    workers=1)
 
     # I think the issue is that the output of the model is in 3 channels, 
     # instead of 1. Not sure why -- but a potential problem as flagged below.
