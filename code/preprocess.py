@@ -2,8 +2,15 @@ import os
 import numpy as np
 import keras
 import keras.utils.all_utils
-from PIL import Image
 import tensorflow as tf
+from tensorflow.python.framework.ops import disable_eager_execution
+
+disable_eager_execution()
+
+
+import gc
+
+#from memory_profiler import profile
 
 
 class DataGenerator(keras.utils.all_utils.Sequence):
@@ -82,20 +89,29 @@ class DataGenerator(keras.utils.all_utils.Sequence):
         if self.shuffle == True:
             np.random.shuffle(self.indexes)
 
+
+
     """
     
     Input: List of IDs of the target images.
     
     """
+    
     def __data_generation(self, list_IDs_temp):
         'Generates data containing batch_size samples' # X : (n_samples, *dim, n_channels)
         # Initialization
 
+        print('Generating data for ' + list_IDs_temp[0], flush=True)
+
         img_batch_dim = (self.batch_size,) + self.target_dims
         label_batch_dim = (self.batch_size,) + self.target_dims
 
-        X = np.empty(img_batch_dim )
-        y = np.empty(label_batch_dim) 
+
+        X = tf.constant([self.image_to_array(os.path.join(self.image_path, fname)) for fname in list_IDs_temp])
+        test_image_names = tf.constant([os.path.join(self.labels_path, fname) for fname in list_IDs_temp])
+
+
+        y = tf.map_fn(fn=self.image_to_array, elems=test_image_names) 
 
         # Read a batch from memory
         for (i, fname) in enumerate(list_IDs_temp):
@@ -109,11 +125,16 @@ class DataGenerator(keras.utils.all_utils.Sequence):
             X[start: end] = (self.image_to_array(train_image_name))
             y[start: end]= (self.image_to_array(test_image_name))
 
-        
+        print('DONE Generating data for ' + list_IDs_temp[0], flush=True)
         return X, y
 
-
+    #@profile
     def image_to_array(self, path_to_image):
+
+        tile_size = (1,) + self.target_dims
+
+        reshaped_size = (-1,) + self.target_dims
+
 
         with tf.keras.preprocessing.image.load_img(
             path_to_image, 
@@ -121,24 +142,21 @@ class DataGenerator(keras.utils.all_utils.Sequence):
             target_size=self.ts) as im:
 
 
-            tile_size = self.target_dims
-
-            imarray = np.array(im)
-            imarray = np.reshape(imarray, (self.ts[0], self.ts[1], 1))
-
-            imarray = (imarray * 1.0) / 255.0
             
-            # Now tile:
-            s = split_image(imarray, tile_size)
-            return s 
+            imarray = tf.expand_dims(tf.keras.utils.img_to_array(im), axis=0)
+
+            
+            patches = tf.image.extract_patches(
+                images = imarray, 
+                sizes = tile_size,
+                strides = tile_size,
+                rates = [1, 1, 1, 1], padding='SAME') # Have to think about the padding
+            
+            reshaped = tf.reshape(patches, reshaped_size)
 
 
+            
 
-###where image3 is a 3-dimensional tensor (e.g. an image), and tile_size is a pair of values [H, W]
-#  specifying the size of a tile. 
-# The output is a tensor with shape [B, H, W, C]
-def split_image(image3, tile_size):
-    image_shape = tf.shape(image3)
-    tile_rows = tf.reshape(image3, [image_shape[0], -1, tile_size[1], image_shape[2]])
-    serial_tiles = tf.transpose(tile_rows, [1, 0, 2, 3])
-    return tf.reshape(serial_tiles, [-1, tile_size[1], tile_size[0], image_shape[2]])
+            return (reshaped * 1.0) / 255.0
+
+
