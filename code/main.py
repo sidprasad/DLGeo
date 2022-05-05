@@ -21,7 +21,7 @@ def main():
 
     dirname = os.path.dirname(__file__)
     train_path = os.path.join(dirname, '../AerialImagesDataset/train') 
-    training_generator = DataGenerator( train_path, img_dims = (256, 256, 1), label_dims = (256,256) ) ## Eventually these dims must change
+    training_generator = DataGenerator( train_path, img_dims = (256, 256, 1), label_dims = (256,256), batch_size = 4 ) ## Eventually these dims must change
 
     model = UNetModel()
 
@@ -30,6 +30,7 @@ def main():
     model.fit_generator(generator=training_generator,
                     use_multiprocessing=True,
                     epochs = num_epochs,
+                    steps_per_epoch = 45,
                     workers=6)
 
     # I think the issue is that the output of the model is in 3 channels, 
