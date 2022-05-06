@@ -72,8 +72,8 @@ def UNetModel(pretrained_weights = None, input_size = (256,256,1)):
 
     # TODO: Learning rate set to 0.002 by huang et al
     optimizer = tf.keras.optimizers.Adam(learning_rate=1e-4)
-    model.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy'])
-    
+    #model.compile(optimizer = optimizer, loss = 'binary_crossentropy', metrics = ['accuracy', tf.keras.metrics.MeanIoU(2)])
+    model.compile(optimizer = optimizer, loss = dice_loss, metrics = ['accuracy', tf.keras.metrics.MeanIoU(2)])
 
     if(pretrained_weights):
         model.load_weights(pretrained_weights)
@@ -81,3 +81,10 @@ def UNetModel(pretrained_weights = None, input_size = (256,256,1)):
     return model
 
 
+def dice_loss(y_true, y_pred):
+  y_true = tf.cast(y_true, tf.float32)
+  y_pred = tf.math.sigmoid(y_pred)
+  numerator = 2 * tf.reduce_sum(y_true * y_pred)
+  denominator = tf.reduce_sum(y_true + y_pred)
+
+  return 1 - numerator / denominator

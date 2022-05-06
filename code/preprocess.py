@@ -36,7 +36,6 @@ class DataGenerator(keras.utils.Sequence):
         self.image_path = os.path.join(self.base_path, 'images')
         self.labels_path = os.path.join(self.base_path, 'gt')
 
-        
         self.batch_size = batch_size
         self.dims = dims
 
