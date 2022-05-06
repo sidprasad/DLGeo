@@ -1,9 +1,11 @@
 import os
 import numpy as np
-import keras
-import keras.utils.all_utils
+import tensorflow.keras # import keras
+from tensorflow import keras
+#from tensorflow import keras.utils.all_utils
 import tensorflow as tf
 from tensorflow.python.framework.ops import disable_eager_execution
+import PIL
 
 #disable_eager_execution()
 
@@ -13,7 +15,7 @@ import gc
 #from memory_profiler import profile
 
 
-class DataGenerator(keras.utils.all_utils.Sequence):
+class DataGenerator(keras.utils.Sequence):
     """
     Generates data for Keras to consume.
     
@@ -25,7 +27,7 @@ class DataGenerator(keras.utils.all_utils.Sequence):
     base_path : Path where we will find our data
     """
     
-    def __init__(self, base_path, dims = (256, 256, 1), batch_size = 32, shuffle=True):
+    def __init__(self, base_path, dims = (256, 256, 1), batch_size = 16, shuffle=True):
         'Initialization'
 
 
@@ -95,8 +97,11 @@ class DataGenerator(keras.utils.all_utils.Sequence):
     #@profile
     def image_to_array(self, path_to_image):
 
-        return tf.keras.preprocessing.image.load_img(
-            path_to_image, 
-            color_mode="grayscale",
-            target_size=self.ts)
+        with PIL.Image.open(path_to_image) as im:
+            return ( 1. * np.asarray(im) / 255.0)
+
+
+        # return np.array(tf.keras.preprocessing.image.load_img(
+        #     path_to_image, 
+        #     color_mode="grayscale"))
 

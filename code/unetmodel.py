@@ -1,13 +1,15 @@
 import numpy as np 
 import os
-import skimage.io as io
-import skimage.transform as trans
+#import skimage.io as io
+#import skimage.transform as trans
 
-from keras.models import *
-from keras.layers import *
-from keras.optimizers import *
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from keras import backend as keras
+
+
+from tensorflow.keras.models import *
+from tensorflow.keras.layers import *
+from tensorflow.keras.optimizers import *
+from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
+from tensorflow.keras import backend as keras
 import tensorflow as tf
 
 
@@ -59,6 +61,10 @@ def UNetModel(pretrained_weights = None, input_size = (256,256,1)):
     conv9 = Conv2D(2, 3, activation = 'relu', padding = 'same', kernel_initializer = 'he_normal')(conv9)
     conv10 = Conv2D(1, 1, activation = 'sigmoid')(conv9) # Should this be 3 not 1? Lets see.
 
+
+
+
+    # TODO: Added by Sidd. Should we be normalizing the model here?
 
     # model = Model(input = inputs, output = conv10)
     # TODO: Why isn't the line above working?
