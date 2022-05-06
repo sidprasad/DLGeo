@@ -10,7 +10,7 @@ from tensorflow.python.framework.ops import disable_eager_execution
 
 import gc
 
-from memory_profiler import profile
+#from memory_profiler import profile
 
 
 class DataGenerator(keras.utils.all_utils.Sequence):
